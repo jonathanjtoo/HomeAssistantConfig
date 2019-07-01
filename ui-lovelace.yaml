@@ -1,0 +1,22 @@
+title: Home
+views:
+  - badges:
+      - person.jonathan
+      - sensor.yr_symbol
+      - sun.sun
+      - camera.babymon
+    cards:
+      - entities:
+          - switch.chopper
+        show_header_toggle: false
+        title: Server
+        type: entities
+      - camera_image: camera.babymon
+        camera_view: live
+        entities:
+          - binary_sensor.babymon_motion_detected
+        title: Baby Monitor
+        type: picture-glance
+    path: default_view
+    title: Home
+

@@ -1,0 +1,54 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# To check configuration from Hassio.local:8123:
+#       go to Configuration > General > Configuration validation > check config
+# If config is valid, reload Home Assistant server:
+#       go to Configuration > General > Server management > restart
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+
+# Sensors
+sensor:
+  # Weather prediction
+  - platform: yr
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+lovelace:
+  mode: yaml
+
+switch:
+  - platform: wake_on_lan
+    name: "Chopper"
+    mac_address: !secret chopper_mac
+    host: !secret chopper_ip
+    turn_off:
+      service: shell_command.turn_off_chopper
+
+shell_command:
+  turn_off_chopper: 'ssh hass@chopper sudo poweroff'
+  
+amcrest:
+  - host: !secret babymon_ip
+    username: !secret babymon_username
+    password: !secret babymon_password
+    name: babymon
+    binary_sensors:
+      - motion_detected
+    sensors:
+      - motion_detector
+      - sdcard
+      - ptz_preset
+    stream_source: snapshot
+    resolution: high
+    scan_interval: 10
