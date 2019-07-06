@@ -27,16 +27,22 @@ script: !include scripts.yaml
 lovelace:
   mode: yaml
 
+logger:
+  default: critical
+  logs:
+    homeassistant.components.shell_command: debug
+    homeassistant.components.switch: debug
+
 switch:
   - platform: wake_on_lan
-    name: "Chopper"
+    name: "chopper"
     mac_address: !secret chopper_mac
     host: !secret chopper_ip
     turn_off:
       service: shell_command.turn_off_chopper
 
 shell_command:
-  turn_off_chopper: 'ssh hass@chopper sudo poweroff'
+  turn_off_chopper: 'ssh -t hass@chopper sudo /sbin/poweroff'
   
 amcrest:
   - host: !secret babymon_ip
@@ -46,7 +52,6 @@ amcrest:
     binary_sensors:
       - motion_detected
     sensors:
-      - motion_detector
       - sdcard
       - ptz_preset
     stream_source: snapshot
