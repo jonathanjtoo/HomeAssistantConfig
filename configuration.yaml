@@ -27,23 +27,31 @@ script: !include scripts.yaml
 lovelace:
   mode: yaml
 
+ffmpeg:
+  ffmpeg_bin: /usr/bin/ffmpeg
+
+stream:
+
 logger:
-  default: critical
+  default: warn
   logs:
     homeassistant.components.shell_command: debug
     homeassistant.components.switch: debug
+    homeassistant.components.stream: debug
+    homeassistant.components.amcrest: debug
+    homeassistant.components.http: debug
 
 switch:
   - platform: wake_on_lan
-    name: "chopper"
-    mac_address: !secret chopper_mac
+    name: "Chopper"
+    mac: !secret chopper_mac
     host: !secret chopper_ip
     turn_off:
       service: shell_command.turn_off_chopper
 
 shell_command:
-  turn_off_chopper: 'ssh -t hass@chopper sudo /sbin/poweroff'
-  
+    turn_off_chopper: "ssh -i /config/ssh/id_rsa hass@chopper 'sudo poweroff'; echo 'done'"
+
 amcrest:
   - host: !secret babymon_ip
     username: !secret babymon_username
@@ -54,6 +62,5 @@ amcrest:
     sensors:
       - sdcard
       - ptz_preset
-    stream_source: snapshot
+    stream_source: rtsp
     resolution: high
-    scan_interval: 10
